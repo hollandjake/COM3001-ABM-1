@@ -23,8 +23,7 @@ global PARAM
     
     PARAM.B_SPD=5;              %speed of movement - units per itn (healthy bee)
     PARAM.I_SPD=5;              %speed of movement - units per itn (infected bee)
-    PARAM.MAXFLWPCOUNT=10;      %max amount of pollen a flower can hold
-    PARAM.MINFLWPCOUNT=1;       %min amount of pollen a flower can hold
+    PARAM.MAXFLWPCOUNT=10;      %
     PARAM.B_MAXPCOUNT=0.05;     %maximum pollen threshold that healthy bee can carry
     PARAM.I_MAXPCOUNT=0.02;     %maximum pollen threshold that infected bee can carry
     PARAM.B_SNSINGRAD=20;       %maximum sensing radius of bee
