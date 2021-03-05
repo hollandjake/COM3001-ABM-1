@@ -19,7 +19,7 @@ function initialise_results(nr,nf,nsteps)
                 'tfood',[zeros(1,nsteps+1)]);               %remaining vegetation level
             
  
- tf=sum(sum(ENV_DATA.food));            %remaining food is summed over all squares in the environment
+ tf=sum(sum(ENV_DATA.pollen));            %remaining food is summed over all squares in the environment
  IT_STATS.tot(1)=nr+nf;
  IT_STATS.tot_r(1)=nr;
  IT_STATS.tot_f(1)=nf;

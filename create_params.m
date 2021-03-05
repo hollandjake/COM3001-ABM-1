@@ -28,6 +28,23 @@ global PARAM
     PARAM.B_MAXPCOUNT=0.05;     %maximum pollen threshold that healthy bee can carry
     PARAM.I_MAXPCOUNT=0.02;     %maximum pollen threshold that infected bee can carry
     PARAM.B_SNSINGRAD=20;       %maximum sensing radius of bee
+	
+	
+	%Environment
+	PARAM.NUM_FLOWERS = 10; % Total number of flowers distributed throughout the map
+	PARAM.MIN_FLOWER_POLLEN = 1;
+	PARAM.MAX_FLOWER_POLLEN	= 10;
+	PARAM.NUM_AGENTS = 100;
+	PARAM.INFECTED_AGENTS = 10;
+		
+	%BEE
+	PARAM.BEE_SPEED_NORMAL = 2;
+	PARAM.BEE_MAX_POLLEN_NORMAL	= 500;
+		
+	PARAM.BEE_SPEED_INFECTED = 1;
+	PARAM.BEE_MAX_POLLEN_INFECTED = 250;
+
+	PARAM.BEE_SENSING_RADIUS = 2;
     
     
     

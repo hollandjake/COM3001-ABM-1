@@ -16,23 +16,22 @@ prev_n=n;   %remember current agent number at the start of this iteration
 
 %execute existing agent update loop
 for cn=1:n
-	curr=agent{cn};
-    if isa(curr,'rabbit')|isa(curr,'fox')
-        [curr,eaten]=eat(curr,cn);               %eating rules (rabbits eat food, foxes eat rabbits)
-        if eaten==0
-            curr=migrate(curr,cn);              %if no food was eaten, then migrate in search of some
-        end
-        [curr,klld]=die(curr,cn);                %death rule (from starvation or old age)
-        if klld==0
-            new=[];
-            [curr,new]=breed(curr,cn);			%breeding rule
-            if ~isempty(new)					%if current agent has bred during this iteration
-                 n_new=n_new+1;                 %increase new agent number
-                 agent{n+n_new}=new;			%add new to end of agent list
-             end
-        end
-       agent{cn}=curr;                          %up date cell array with modified agent data structure
-    end
+	bee=agent{cn};
+	if isempty(bee.target)
+		bee.target = find_flower(bee, cn);
+	end
+	
+	% If we have a target location
+	if ~isempty(bee.target)
+		% If bee is ontop of the target (within 2 d.p.)
+		if round(bee.pos,2) == bee.target
+			bee = collect_pollen(bee, cn);
+		else
+			bee = move(bee, cn);
+		end
+	end
+	
+	agent{cn}=bee;                          %up date cell array with modified agent data structure
 end
 
 temp_n=n+n_new; %new agent number (before accounting for agent deaths)

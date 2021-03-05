@@ -12,7 +12,7 @@ global ENV_DATA
    %    ENV_DATA.shape - shape of environment - FIXED AS SQUARE
    %    ENV_DATA.units - FIXED AS KM
    %    ENV_DATA.bm_size - length of environment edge in km
-   %    ENV_DATA.food is  a bm_size x bm_size array containing distribution
+   %    ENV_DATA.pollen is  a bm_size x bm_size array containing distribution
    %    of food
 
 if cpos(1)>ENV_DATA.bm_size-spd
@@ -36,5 +36,5 @@ else
     ymin=cpos(2)-spd;
 end
 
-loc_food=ENV_DATA.food(xmin:xmax,ymin:ymax);    %extract distribution of food within the local search radius
+loc_food=ENV_DATA.pollen(xmin:xmax,ymin:ymax);    %extract distribution of food within the local search radius
 

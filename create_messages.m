@@ -16,10 +16,10 @@ function create_messages(nr,nf,agent)
  for an=1:length(agent)
      if isa(agent{an},'rabbit')
         MESSAGES.atype(an)=1;
-        MESSAGES.pos(an,:)=get(agent{an},'pos');
+        MESSAGES.pos(an,:)=agent{an}.pos;
      elseif isa(agent{an},'fox')
         MESSAGES.atype(an)=2;
-        MESSAGES.pos(an,:)=get(agent{an},'pos');
+        MESSAGES.pos(an,:)=agent{an}.pos;
      else
         MESSAGES.atype(an)=0; 
         MESSAGES.pos(an,:)=[-1 -1];

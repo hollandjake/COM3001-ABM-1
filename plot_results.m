@@ -1,4 +1,12 @@
 function plot_results(agent,nsteps,fmode,outImages)
+	% Use hexagons as markers for hive
+	hex = [-sqrt(3)/5 -1/5; 
+			0 -2/5;  
+			+sqrt(3)/5 -1/5;
+			+sqrt(3)/5 +1/5;
+			0  2/5;
+			-sqrt(3)/5 1/5;
+			-sqrt(3)/5 -1/5];
 
     %Plots 2d patch images of agents onto background 
     %%%%%%%%%%%
@@ -64,44 +72,47 @@ function plot_results(agent,nsteps,fmode,outImages)
         %create plot of agent locations. 
         f3=figure(3);
 
-        bm=ENV_DATA.bm_size;   
-        typ=MESSAGES.atype;
-        clf                             %clear previous plot
-        set(f3,'Units','Normalized');
-        set(f3,'Position',[0.05 0.05 0.66 0.66]);
-        v=(1:bm);
-        [X,Y]=meshgrid(v);
-        Z=ENV_DATA.food;
-        H=zeros(bm,bm);
-        hs=surf(Y,X,H,Z);               %plot food distribution on plain background
-        cm=colormap('gray');
-        icm=flipud(cm);
-        colormap(icm);
-        set(hs,'SpecularExponent',1);       %sets up lighting
-        set(hs,'SpecularStrength',0.1);
+%         bm=ENV_DATA.bm_size;   
+%         typ=MESSAGES.atype;
+%         clf                             %clear previous plot
+%         set(f3,'Units','Normalized');
+%         set(f3,'Position',[0.05 0.05 0.66 0.66]);
+%         v=(1:bm);
+%         [X,Y]=meshgrid(v);
+%         Z=ENV_DATA.pollen;
+%         H=zeros(bm,bm);
+%         hs=surf(Y,X,H,Z);               %plot food distribution on plain background
+%         cm=colormap('gray');
+%         icm=flipud(cm);
+%         colormap(icm);
+%         set(hs,'SpecularExponent',1);       %sets up lighting
+%         set(hs,'SpecularStrength',0.1);
+		
+		
+		
+		imagesc(ENV_DATA.pollen);
+		colormap('summer');
+		axis('square');
+		
         hold on
 
         for cn=1:length(agent)                          %cycle through each agent in turn
-            if typ(cn)>0                                %only plot live agents
-                pos=get(agent{cn},'pos');               %extract current position    
-                if isa(agent{cn},'rabbit')              %choose plot colour depending on agent type
-                    ro=plot(pos(1),pos(2),'r*');
-                else   
-                    fo=plot(pos(1),pos(2),'b.'); 
-                    set(fo,'MarkerSize',30);
-                end
-            end
+			if MESSAGES.atype(cn) > 0
+				pos=agent{cn}.pos;               %extract current position    
+				agentPoint = plot(pos(1),pos(2));
+				set(agentPoint, 'Marker', 'o');
+				set(agentPoint, 'MarkerSize', 10);
+				set(agentPoint, 'MarkerEdgeColor', 'k');
+				set(agentPoint, 'LineWidth', 2);
+				set(agentPoint, 'MarkerFaceColor', [1 1 0]);
+			end
         end
 
-        h=findobj(gcf,'type','surface');			%Once all cells are plotted, set up perspective, lighting etc.
-        set(h,'edgecolor','none');
-        lighting flat
-        h=findobj(gcf,'type','surface');
-        set(h,'linewidth',0.1)
-        set(h,'specularstrength',0.2)
-        axis off
-        axis equal
-        set(gcf,'color',[1 1 1]);
+        %Render the hive
+		hive = patch('Faces', [1,2,3,4,5,6],...
+			'Vertices', hex+ENV_DATA.hive_location,...
+			'FaceColor',[0.9290 0.6940 0.1250],...
+			'LineWidth', 2);
 
         uicontrol('Style','pushbutton',...
                   'String','PAUSE',...

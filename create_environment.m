@@ -8,13 +8,18 @@ function create_environment(size)
    %    ENV_DATA.shape - shape of environment - FIXED AS SQUARE
    %    ENV_DATA.units - FIXED AS KM
    %    ENV_DATA.bm_size - length of environment edge in km
-   %    ENV_DATA.food is  a bm_size x bm_size array containing distribution
+   %    ENV_DATA.pollen is  a bm_size x bm_size array containing distribution
    %    of food
 
-global ENV_DATA
+global ENV_DATA PARAM
 
 ENV_DATA.shape='square';
-ENV_DATA.units='kilometres';
+ENV_DATA.units='metres';
 ENV_DATA.bm_size=size;
-ENV_DATA.food=floor(50*ones(size,size));        %distribute food in km x km squares 
-ENV_DATA.food(round(0.6*size):round(0.8*size),round(0.6*size):round(0.8*size))=0;   %generate patch where there is no food
+
+ENV_DATA.pollen = zeros(size);
+
+flowerPositions = randperm(size^2, PARAM.NUM_FLOWERS);
+ENV_DATA.pollen(flowerPositions) = randi([PARAM.MIN_FLOWER_POLLEN, PARAM.MAX_FLOWER_POLLEN], 1, PARAM.NUM_FLOWERS);
+
+ENV_DATA.hive_location = [randi(size),randi(size)];

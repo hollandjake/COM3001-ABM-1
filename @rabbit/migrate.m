@@ -24,7 +24,7 @@ global ENV_DATA IT_STATS N_IT
    %    ENV_DATA.shape - shape of environment - FIXED AS SQUARE
    %    ENV_DATA.units - FIXED AS KM
    %    ENV_DATA.bm_size - length of environment edge in km
-   %    ENV_DATA.food is  a bm_size x bm_size array containing distribution
+   %    ENV_DATA.pollen is  a bm_size x bm_size array containing distribution
    %    of food
 
 mig=0;                               %indicates whether rabbit has successfully migrated
