@@ -16,7 +16,6 @@ function [agent]=create_agents(nb,ni)
  
 global ENV_DATA MESSAGES PARAM 
   
-bm_size=ENV_DATA.bm_size;
 tot_agents = nb+ni;
 hloc=ENV_DATA.hive_location.*ones(tot_agents,1);      %generate random initial positions for rabbits
 iloc=ENV_DATA.hive_location.*ones(tot_agents,1);      %generate random initial positions for foxes
