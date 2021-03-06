@@ -26,4 +26,4 @@ function [nagent,nn]=update_messages(agent,prev_n,temp_n)
 
 global IT_STATS N_IT ENV_DATA
 
-IT_STATS.tfood(N_IT+1)=sum(sum(ENV_DATA.pollen));   %total pollen remaining
+IT_STATS.pollen_remaining(N_IT+1)=sum(sum(ENV_DATA.pollen));   %total pollen remaining

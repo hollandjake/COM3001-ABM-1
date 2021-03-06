@@ -1,4 +1,4 @@
-function initialise_results(nr,nf,nsteps)
+function initialise_results(nr,ni,nsteps)
 
  global  IT_STATS ENV_DATA 
  
@@ -7,20 +7,12 @@ function initialise_results(nr,nf,nsteps)
 %iteration (number of agents etc)
 %ENV_DATA - data structure representing the environment 
  
- IT_STATS=struct('div_r',[zeros(1,nsteps+1);],...            %no. births per iteration
-                'div_f',[zeros(1,nsteps+1)],...
-                'died_r',[zeros(1,nsteps+1)],...			%no. agents dying per iteration
-                'died_f',[zeros(1,nsteps+1)],...		
-                'eaten',[zeros(1,nsteps+1)],...              %no. rabbits eaten per iteration
-                'mig',[zeros(1,nsteps+1)],...                %no. agents migrating per iteration
-                'tot',[zeros(1,nsteps+1)],...				%total no. agents in model per iteration
-                'tot_r',[zeros(1,nsteps+1)],...             % total no. rabbits
-                'tot_f',[zeros(1,nsteps+1)],...             % total no. foxes
-                'tfood',[zeros(1,nsteps+1)]);               %remaining vegetation level
+ IT_STATS=struct('num_agents',zeros(1,nsteps+1),...			% total no. agents in model per iteration
+                 'pollen_remaining',zeros(1,nsteps+1),...	% remaining pollen level
+				 'pollen_collected',zeros(1,nsteps+1));
             
  
  tf=sum(sum(ENV_DATA.pollen));            %remaining food is summed over all squares in the environment
- IT_STATS.tot(1)=nr+nf;
- IT_STATS.tot_r(1)=nr;
- IT_STATS.tot_f(1)=nf;
- IT_STATS.tfood(1)=tf;
+ IT_STATS.num_agents(1)=nr+ni;
+ IT_STATS.pollen_remaining(1)=tf;
+ IT_STATS.pollen_collected(1)=0;

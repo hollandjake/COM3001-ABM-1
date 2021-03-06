@@ -17,20 +17,21 @@ function [agent]=create_agents(nb,ni)
 global ENV_DATA MESSAGES PARAM 
   
 bm_size=ENV_DATA.bm_size;
-hloc=ENV_DATA.hive_location.*ones(bm_size,1);      %generate random initial positions for rabbits
-iloc=ENV_DATA.hive_location.*ones(bm_size,1);      %generate random initial positions for foxes
+tot_agents = nb+ni;
+hloc=ENV_DATA.hive_location.*ones(tot_agents,1);      %generate random initial positions for rabbits
+iloc=ENV_DATA.hive_location.*ones(tot_agents,1);      %generate random initial positions for foxes
 
 MESSAGES.pos=[hloc;iloc];
 
 %generate all health bee agents and record their positions in ENV_MAT_R
-agent = cell(nb+ni);
+agent = cell(tot_agents);
 for r=1:nb
     pos=hloc(r,:);
     agent{r}=bee(pos,false);
 end
 
 %generate all infected bee agents and record their positions in ENV_MAT_F
-for f=nb+1:nb+ni
+for f=nb+1:tot_agents
     pos=iloc(f-nb,:);
     agent{f}=bee(pos,true);
 end

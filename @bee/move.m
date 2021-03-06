@@ -1,4 +1,4 @@
-function bee = move(bee, cn)
+function bee = move(bee)
 
 	global ENV_DATA IT_STATS N_IT 
 

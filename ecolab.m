@@ -39,35 +39,18 @@ function ecolab(size,nr,nf,nsteps,fmode,outImages)
     create_params;                      %sets the parameters for this simulation
     create_environment(size);           %creates environment data structure, given an environment size
     random_selection(1);                %randomises random number sequence (NOT agent order). If input=0, then simulation should be identical to previous for same initial values
-    [agent]=create_agents(nr,nf);       %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
-    create_messages(nr,nf,agent);       %sets up the initial message lists
+    agents=create_agents(nr,nf);        %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
+    create_messages(nr,nf,agents);       %sets up the initial message lists
     initialise_results(nr,nf,nsteps);   %initilaises structure for storing results
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL EXECUTION
     for n_it=1:nsteps                   %the main execution loop
         N_IT=n_it;
-        [agent,n]=agnt_solve(agent);     %the function which calls the rules
-        plot_results(agent,nsteps,fmode,outImages); %updates results figures and structures
+        agents=agnt_solve(agents);     %the function which calls the rules
+		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
+		IT_STATS.pollen_collected(N_IT+1) = 0;
+        plot_results(agents,nsteps,fmode,outImages); %updates results figures and structures
         %mov(n_it)=getframe(fig3);
-        if n<=0                          %if no more agents, then stop simulation
-            break
-            disp('General convergence criteria satisfied - no agents left alive! > ')
-        end
-        if fmode == true                                       % if fastmode is used ...
-           for test_l=1 : 5                                    % this checks the total number agents and adjusts the CONTROL_DATA.fmode_display_every variable accoringly to help prevent extreme slowdown
-               if n > CONTROL_DATA.fmode_control(1,test_l)     % CONTROL_DATA.fmode_control contains an array of thresholds for agent numbers and associated fmode_display_every values
-                   CONTROL_DATA.fmode_display_every = CONTROL_DATA.fmode_control(2,test_l);
-               end
-           end
-            if IT_STATS.tot_r(n_it) == 0             %fastmode convergence - all rabbits eaten - all foxes will now die
-                disp('Fast mode convergence criteria satisfied - no rabbits left alive! > ')
-                break
-            end  
-            if IT_STATS.tot_f(n_it) == 0             %fastmode convergence - all foxes starved - rabbits will now proliferate unchecked until all vegitation is eaten
-                disp('Fast mode convergence criteria satisfied - no foxes left alive ! > ')
-                break
-            end
-        end
     end
 eval(['save results_nr_' num2str(nr) '_nf_' num2str(nf) '.mat IT_STATS ENV_DATA' ]);
 clear global
