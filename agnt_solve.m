@@ -44,5 +44,7 @@ function [agents, total_collected_pollen] = agnt_solve(agents)
 	end
 	
 	total_collected_pollen = sum(total_collected_pollen);
+	
+	update_messages(agents);
 end
 

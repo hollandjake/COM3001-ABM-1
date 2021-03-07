@@ -21,6 +21,7 @@ ENV_DATA.pollen = zeros(size);
 
 flowerPositions = randperm(size^2, PARAM.NUM_FLOWERS);
 ENV_DATA.pollen(flowerPositions) = randi([PARAM.MIN_FLOWER_POLLEN, PARAM.MAX_FLOWER_POLLEN], 1, PARAM.NUM_FLOWERS);
+
 ENV_DATA.total_pollen = sum(sum(ENV_DATA.pollen));
 
 ENV_DATA.hive_location = [randi(size),randi(size)];

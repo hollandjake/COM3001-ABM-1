@@ -1,5 +1,5 @@
 function [bee, collected_pollen] = collect_pollen(bee)
-	global ENV_DATA IT_STATS N_IT;
+	global ENV_DATA IT_STATS;
 	cpos = round(bee.pos);
 	pollen_levels = ENV_DATA.pollen(cpos(2),cpos(1));
 	if pollen_levels > 0

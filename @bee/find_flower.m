@@ -8,12 +8,6 @@ function target = find_flower(bee)
 
 	bee_offset = bee_pos - [minX,minY];
 	search_field = ENV_DATA.pollen(minY:maxY,minX:maxX);
-	if (bee_pos(1) > 10 || bee_pos(2) > 10)
-		disp(bee_pos);
-	end
-	if (bee_offset(1) < 0 || bee_offset(2) < 0)
-		disp(bee_offset);
-	end
 	search_field(bee_offset + [1,1]) = 0; % Stop the bee going to the cell it is over
 	[y,x] = find(search_field > 0); % Find all cells containing flowers with pollen levels > 0
 	squared_dist = (x-bee_offset(:,1)).^2+(y-bee_offset(:,2)).^2;

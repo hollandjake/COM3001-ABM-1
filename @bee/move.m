@@ -1,6 +1,6 @@
 function bee = move(bee)
 
-	global ENV_DATA IT_STATS N_IT 
+	global ENV_DATA IT_STATS N_IT
 
 	if ~isempty(bee.target)
 		% Move towards target
@@ -19,5 +19,4 @@ function bee = move(bee)
 	end
 
 	bee.pos = constrain(newpos, 1, ENV_DATA.bm_size);
-
 end

@@ -1,4 +1,4 @@
-function initialise_results(seed,na,ni,nsteps,save_file)
+function initialise_results(seed,na,ni,nsteps,size,save_file)
 
 	global  IT_STATS ENV_DATA 
 
@@ -10,7 +10,8 @@ function initialise_results(seed,na,ni,nsteps,save_file)
 	IT_STATS=struct('num_agents',zeros(1,nsteps+1),...			% total no. agents in model per iteration
 					 'pollen_remaining',zeros(1,nsteps+1),...	% remaining pollen level
 					 'pollen_at_hive',zeros(1,nsteps+1),...
-					 'pollen_transporting', zeros(1,nsteps+1));
+					 'pollen_transporting', zeros(1,nsteps+1),...
+					 'pollen_distribution', zeros(nsteps+1,size,size));
 
 
 	tf=sum(sum(ENV_DATA.pollen));            %remaining food is summed over all squares in the environment
@@ -18,6 +19,7 @@ function initialise_results(seed,na,ni,nsteps,save_file)
 	IT_STATS.pollen_remaining(1)=tf;
 	IT_STATS.pollen_at_hive(1)=0;
 	IT_STATS.pollen_transporting(1) = 0;
+	IT_STATS.pollen_distribution(1, :, :) = ENV_DATA.pollen;
 
 
 	if save_file

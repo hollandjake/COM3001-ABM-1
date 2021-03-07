@@ -57,8 +57,8 @@ function ecolab(size,na,ni,nsteps,varargin)
     create_params;                      %sets the parameters for this simulation
     create_environment(size);           %creates environment data structure, given an environment size
     agents=create_agents(na,ni);        %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
-    create_messages(na,ni,agents);       %sets up the initial message lists
-    initialise_results(seed,na,ni,nsteps,save_file);   %initilaises structure for storing results
+    create_messages(agents, nsteps);	%sets up the initial message lists
+    initialise_results(seed,na,ni,nsteps,size,save_file);   %initilaises structure for storing results
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL EXECUTION
 	
@@ -69,7 +69,8 @@ function ecolab(size,na,ni,nsteps,varargin)
 		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
 		IT_STATS.pollen_at_hive(N_IT+1) = 0;
-		plot_results(agents,nsteps,fastmode); %updates results figures and structures
+		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
+		plot_results(nsteps,fastmode); %updates results figures and structures
 	end
 	
 	if ~isempty(IT_STATS.VIDEO_CAPTURE)

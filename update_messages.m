@@ -1,4 +1,4 @@
-function [nagent,nn]=update_messages(agent,prev_n,temp_n)
+function update_messages(agents)
 
 %copy all surviving and new agents in to a new agent list - dead agents
 %will be empty structures
@@ -24,6 +24,8 @@ function [nagent,nn]=update_messages(agent,prev_n,temp_n)
 %ENV_DATA - is a data structure containing information about the model
    %environment
 
-global IT_STATS N_IT ENV_DATA
+global IT_STATS N_IT ENV_DATA MESSAGES
 
-IT_STATS.pollen_remaining(N_IT+1)=sum(sum(ENV_DATA.pollen));   %total pollen remaining
+IT_STATS.pollen_remaining(N_IT+1)=sum(sum(ENV_DATA.pollen(1,:,:)));   %total pollen remaining
+
+MESSAGES.pos(N_IT+1, :, :) = get_agent_positions(agents);

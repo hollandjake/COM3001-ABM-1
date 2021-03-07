@@ -1,4 +1,4 @@
-function plot_results(agent,nsteps,fastmode)
+function plot_results(nsteps,fastmode)
 	% Use hexagons as markers for hive
 	hex = [-sqrt(3)/5 -1/5; 
 			0 -2/5;  
@@ -19,6 +19,7 @@ function plot_results(agent,nsteps,fastmode)
     % Modified by D Walker 3/4/08
 
     global N_IT IT_STATS ENV_DATA MESSAGES CONTROL_DATA DISPLAY
+	persistent start_time, start_time = tic;
     %declare variables that can be seen by all functions
     %N_IT is current iteration number
     %ENV_DATA - data structure representing the environment (initialised in
@@ -45,72 +46,63 @@ function plot_results(agent,nsteps,fastmode)
     if (fastmode==false) || (N_IT>=nsteps) || ~isempty(IT_STATS.VIDEO_CAPTURE) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
 		
 		check_for_figure()
-			
-		% progress bar
-		ax0 = axes( ...
-            'Position', [0 0 1 0.02], ...
-            'XLim', [0 1], ...
-            'YLim', [0 1], ...
-            'Box', 'on', ...
-            'ytick', [], ...
-            'xtick', [] );
 		
-		patch(...
-			[0, N_IT/nsteps, N_IT/nsteps, 0], ...
-			[0 0 1 1],...
-			'red');
-		
-		axtoolbar(ax0);
-
-
-        col{1}='y-';                   %set up colours that will represent different cell types yellow for collected pollen, green for remaining pollen
-        col{2}='g-';
+		elapsed = toc(start_time);
+		seconds_per_tick = elapsed/N_IT;
+		text(0, 0, num2str(seconds_per_tick * (nsteps - N_IT)));
 		
         %create plot of agent locations. 	
-		ax1 = subplot(4,1,[1,2,3]);
-		imagesc(ENV_DATA.pollen);
+		subplot(4,1,[1,2,3]);
+		imagesc(permute(IT_STATS.pollen_distribution(N_IT+1,:,:),[2 3 1]));
 		colormap('summer');
 		axis('square');
-
 		
         hold on
 
-        for cn=1:length(agent)               %cycle through each agent in turn
-			pos=agent{cn}.pos;               %extract current position
-			plot(pos(1),pos(2),...
-				'Marker', 'o',...
-				'MarkerSize', 10,...
-				'MarkerEdgeColor', 'k',...
-				'LineWidth', 2,...
-				'MarkerFaceColor', [1 1 0]);
-        end
+%         for cn=1:length(agent)               %cycle through each agent in turn
+% 			pos=agent{cn}.pos;               %extract current position
+% 			plot(pos(1),pos(2),...
+% 				'Marker', 'o',...
+% 				'MarkerSize', 10,...
+% 				'MarkerEdgeColor', 'k',...
+% 				'LineWidth', 2,...
+% 				'MarkerFaceColor', [1 1 0]);
+%         end
+		
+		agent_positions = MESSAGES.pos(N_IT+1, :, :);
+		
+		
+		scatter(agent_positions(:, :,1),agent_positions(:, :,2),70,...
+			'Marker', 'o',...
+			'MarkerEdgeColor', 'k',...
+			'LineWidth', 2,...
+			'MarkerFaceColor', [1 1 0]);
+		
 
         %Render the hive
-		hive = patch('Faces', [1,2,3,4,5,6],...
+		patch('Faces', [1,2,3,4,5,6],...
 			'Vertices', hex+ENV_DATA.hive_location,...
 			'FaceColor',[0.9290 0.6940 0.1250],...
 			'LineWidth', 2);
-		
-		axtoolbar(ax1,{'zoomin','zoomout','restoreview','datacursor'});
-			
+					
 		hold off
 		
-		ax2 = subplot(4,1,4);
+		subplot(4,1,4);
 		title('Pollen collected');
 		y = [pollen_at_hive(1:N_IT+1);pollen_at_hive(1:N_IT+1)+pollen_transporting(1:N_IT+1);ones(1,N_IT+1)*ENV_DATA.total_pollen;]';
 		x = 0:N_IT;
 		area(x,y, 'EdgeAlpha', 0);
 		colororder([0.9290 0.6940 0.1250; 0 0 0; 0.4660 0.6740 0.1880]);
 		axis([0 nsteps 0 ENV_DATA.total_pollen]);
-		axtoolbar(ax2, {'zoomin','zoomout','restoreview', 'datacursor'});
-
 		
 		set(DISPLAY.fig, 'Name', ['Iteration ' num2str(N_IT) '/' num2str(nsteps)]);
         drawnow
 		
 		if ~isempty(IT_STATS.VIDEO_CAPTURE)	
 			frame = getframe(DISPLAY.fig);
-			writeVideo(IT_STATS.VIDEO_CAPTURE, frame);
+			f1 = frame2im(frame);
+			f2 = imresize(f1, [840, 1120]);
+			writeVideo(IT_STATS.VIDEO_CAPTURE, f2);
 		end
     end
 end
