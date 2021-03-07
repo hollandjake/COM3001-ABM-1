@@ -42,7 +42,7 @@ function plot_results(agent,nsteps,fastmode)
 
 
     %plot line graphs of agent numbers and remaining food
-    if (fastmode==false) || (N_IT>=nsteps) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
+    if (fastmode==false) || (N_IT>=nsteps) || ~isempty(IT_STATS.VIDEO_CAPTURE) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
 		
 		check_for_figure()
 			

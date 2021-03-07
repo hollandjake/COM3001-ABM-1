@@ -23,6 +23,7 @@ function initialise_results(seed,na,ni,nsteps,save_file)
 	if save_file
 		filename = sprintf("results/seed_%d_tot_%d_inf_%d",seed,na,ni);
 		IT_STATS.VIDEO_CAPTURE = VideoWriter(filename, 'MPEG-4');
+		IT_STATS.VIDEO_CAPTURE.FrameRate = 10;
 		open(IT_STATS.VIDEO_CAPTURE);
 	else
 		IT_STATS.VIDEO_CAPTURE = [];
