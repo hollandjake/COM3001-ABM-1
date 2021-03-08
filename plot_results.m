@@ -1,4 +1,4 @@
-function plot_results(nsteps,fastmode)
+function plot_results(agents, nsteps,fastmode)
 	% Use hexagons as markers for hive
 	hex = [-sqrt(3)/5 -1/5; 
 			0 -2/5;  
@@ -53,30 +53,39 @@ function plot_results(nsteps,fastmode)
 		
         %create plot of agent locations. 	
 		subplot(4,1,[1,2,3]);
-		imagesc(ENV_DATA.pollen);
+% 		im = imagesc(ENV_DATA.pollen);
+		im = imresize(ENV_DATA.pollen, [1000, NaN],'nearest');
+		imshow(im);
 		colormap('summer');
 		axis('square');
 		
         hold on
+		
+		bee_img = imread('bee copy.png');
+		bee_img = imresize(bee_img, [50,NaN], 'nearest');
+		
+		agent_positions = MESSAGES.pos(N_IT+1, :, :);
 
-%         for cn=1:length(agent)               %cycle through each agent in turn
-% 			pos=agent{cn}.pos;               %extract current position
+
+        for cn=1:length(agents)               %cycle through each agent in turn
+			pos=[agent_positions(:,cn, 1), agent_positions(:,cn,2)];               %extract current position
+			
 % 			plot(pos(1),pos(2),...
 % 				'Marker', 'o',...
-% 				'MarkerSize', 10,...
+% 				'MarkerSize', 1,...
 % 				'MarkerEdgeColor', 'k',...
 % 				'LineWidth', 2,...
 % 				'MarkerFaceColor', [1 1 0]);
-%         end
+			
+			image(pos(1)*100,pos(2)*100,bee_img);
+        end
+				
 		
-		agent_positions = MESSAGES.pos(N_IT+1, :, :);
-		
-		
-		scatter(agent_positions(:, :,1),agent_positions(:, :,2),70,...
-			'Marker', 'o',...
-			'MarkerEdgeColor', 'k',...
-			'LineWidth', 2,...
-			'MarkerFaceColor', [1 1 0]);
+% 		scatter(agent_positions(:, :,1),agent_positions(:, :,2),70,...
+% 			'Marker', 'o',...
+% 			'MarkerEdgeColor', 'k',...
+% 			'LineWidth', 2,...
+% 			'MarkerFaceColor', [1 1 0]);
 
         %Render the hive
 		patch('Faces', [1,2,3,4,5,6],...

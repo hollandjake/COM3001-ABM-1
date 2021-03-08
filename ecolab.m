@@ -83,7 +83,7 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 	for n_it=1:nsteps
 		N_IT = n_it;
 		ENV_DATA.pollen = permute(IT_STATS.pollen_distribution(N_IT+1, :, :), [2 3 1]);
-		plot_results(nsteps, fastmode);
+		plot_results(agents, nsteps, fastmode);
 	end
 	
 	if ~isempty(IT_STATS.VIDEO_CAPTURE)
