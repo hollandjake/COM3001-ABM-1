@@ -53,7 +53,7 @@ function plot_results(nsteps,fastmode)
 		
         %create plot of agent locations. 	
 		subplot(4,1,[1,2,3]);
-		imagesc(permute(IT_STATS.pollen_distribution(N_IT+1,:,:),[2 3 1]));
+		imagesc(ENV_DATA.pollen);
 		colormap('summer');
 		axis('square');
 		
@@ -77,7 +77,6 @@ function plot_results(nsteps,fastmode)
 			'MarkerEdgeColor', 'k',...
 			'LineWidth', 2,...
 			'MarkerFaceColor', [1 1 0]);
-		
 
         %Render the hive
 		patch('Faces', [1,2,3,4,5,6],...

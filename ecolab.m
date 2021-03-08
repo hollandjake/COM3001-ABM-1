@@ -1,4 +1,4 @@
-function ecolab(size,na,ni,nsteps,varargin)
+function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 
 	%ECO_LAB  agent-based predator-prey model, developed for
 	%demonstration purposes only for University of Sheffield module
@@ -54,7 +54,7 @@ function ecolab(size,na,ni,nsteps,varargin)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL INITIALISATION
     create_control;                     %sets up the parameters to control fmode (speed up the code during experimental testing
-    create_params;                      %sets the parameters for this simulation
+    create_params(num_flowers);                      %sets the parameters for this simulation
     create_environment(size);           %creates environment data structure, given an environment size
     agents=create_agents(na,ni);        %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
     create_messages(agents, nsteps);	%sets up the initial message lists
@@ -70,15 +70,25 @@ function ecolab(size,na,ni,nsteps,varargin)
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
 		IT_STATS.pollen_at_hive(N_IT+1) = 0;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
-		plot_results(nsteps,fastmode); %updates results figures and structures
+% 		plot_results(nsteps,fastmode); %updates results figures and structures
+	end
+	
+	filename= sprintf("results/seed_%d_tot_%d_inf_%d.mat",seed,na,ni);
+	VID = IT_STATS.VIDEO_CAPTURE;
+	IT_STATS = rmfield(IT_STATS,'VIDEO_CAPTURE');
+	save(filename, 'IT_STATS', 'ENV_DATA');
+	IT_STATS.VIDEO_CAPTURE = VID;
+	
+	% Finished processing so now just render all the frames
+	for n_it=1:nsteps
+		N_IT = n_it;
+		ENV_DATA.pollen = permute(IT_STATS.pollen_distribution(N_IT+1, :, :), [2 3 1]);
+		plot_results(nsteps, fastmode);
 	end
 	
 	if ~isempty(IT_STATS.VIDEO_CAPTURE)
 		close(IT_STATS.VIDEO_CAPTURE);
 	end
 	
-	filename= sprintf("results/seed_%d_tot_%d_inf_%d.mat",seed,na,ni);
-	IT_STATS = rmfield(IT_STATS,'VIDEO_CAPTURE');
-	save(filename, 'IT_STATS', 'ENV_DATA');
 	clear global
 end

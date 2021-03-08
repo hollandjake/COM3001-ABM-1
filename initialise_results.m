@@ -11,7 +11,8 @@ function initialise_results(seed,na,ni,nsteps,size,save_file)
 					 'pollen_remaining',zeros(1,nsteps+1),...	% remaining pollen level
 					 'pollen_at_hive',zeros(1,nsteps+1),...
 					 'pollen_transporting', zeros(1,nsteps+1),...
-					 'pollen_distribution', zeros(nsteps+1,size,size));
+					 'pollen_distribution', zeros(nsteps+1,size,size),...
+					 'agents', zeros(nsteps+1,na));
 
 
 	tf=sum(sum(ENV_DATA.pollen));            %remaining food is summed over all squares in the environment

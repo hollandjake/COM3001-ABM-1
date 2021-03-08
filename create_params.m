@@ -1,5 +1,4 @@
-function create_params
-
+function create_params(num_flowers)
 %set up breeding, migration and starvation threshold parameters. These
 %are all completely made up!
 
@@ -31,7 +30,7 @@ global PARAM
 	
 	
 	%Environment
-	PARAM.NUM_FLOWERS = 10; % Total number of flowers distributed throughout the map
+	PARAM.NUM_FLOWERS = num_flowers; % Total number of flowers distributed throughout the map
 	PARAM.MIN_FLOWER_POLLEN = 1;
 	PARAM.MAX_FLOWER_POLLEN	= 10;
 	PARAM.NUM_AGENTS = 100;
