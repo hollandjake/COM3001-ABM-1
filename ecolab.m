@@ -70,8 +70,6 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 		[agents, collected_pollen]=agnt_solve(agents);     %the function which calls the rules
 		IT_STATS.num_agents(N_IT+1) = length(agents);
 		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
-		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
-		IT_STATS.pollen_at_hive(N_IT+1) = 0;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
 		plot_results(nsteps,fastmode); %updates results figures and structures
 	end

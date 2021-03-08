@@ -1,0 +1,11 @@
+function target = is_full(bee)
+
+
+    global ENV_DATA IT_STATS;
+    
+    if bee.collected_pollen >= bee.max_pollen
+        target = ENV_DATA.hive_location;
+    else 
+        target = [];
+    end
+end

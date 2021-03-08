@@ -1,0 +1,12 @@
+function target = is_full(bee)
+if bee.collected_pollen >= PARAM.BEE_MAX_POLLEN_INFECTED
+            target = ENV_DATA.hive_location;
+        else 
+            target = [];
+        end
+        
+        if bee.collected_pollen >= PARAM.BEE_MAX_POLLEN_NORMAL
+            target = ENV_DATA.hive_location;
+        else
+            target = [];
+        end

@@ -9,8 +9,5 @@ function [bee, collected_pollen] = collect_pollen(bee)
 		bee.collected_pollen = bee.collected_pollen + collected_pollen;
     else
 		collected_pollen = 0;
-    end  
-    
-    %check if the bee agent is full. if yes set target to hive
-    is_full(bee);
+    end   
 end
