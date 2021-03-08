@@ -1,28 +1,31 @@
 function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 
-	%ecolab
-	%ecolab(
-	%		size                  Size of the grid - it will be size x size
+	% ECOLAB runs a simulation of the bee foraging model
 	%
-	%		num_flowers           Number of flowers
+	% ARGUMENTS
+	%	size				Size of the grid - it will be size x size
 	%
-	%		number_of_agents      Number of bees
+	%	num_flowers			Number of flowers
 	%
-	%		number_of_infected    Number of bees infected (this is included
-	%						      in the number_of_agents)
+	%	number_of_agents	Number of bees
 	%
-	%		number_of_steps       Number of iterations
+	%	number_of_infected	Number of bees infected
 	%
-	%		<optional args>
-	%		'seed', 0             Random number used for seeding the
-	%		randomiser
+	%	number_of_steps		Number of iterations
 	%
-	%		'fastmode', true      Skip some rendering to speed up
-	%		processing (is disabled if savefile is enabled)
+	% OPTIONAL ARGUMENTS
+	%	'seed'				Random number used for seeding the randomiser
 	%
-	%		'savefile', true      Save an mp4 of the figure
-	%)
-	% e.g. ecolab(10, 25, 10, 2, 100, 'seed', 5, 'fastmode', true)
+	%	'fastmode'			Skip some rendering to speed up processing (is disabled if savefile is enabled)
+	%
+	%	'savefile'			Save an mp4 of the figure
+	%
+	% e.g. ecolab(10, 25, 10, 2, 100, 'seed', 5, 'fastmode', true) will run
+	% a simulation on a 10x10 grid with 25 flowers, it will have 10 healthy
+	% agents and 2 infected agents, the simulation will run for 100
+	% iterations and will be initialised with the seed, '5', it will skip
+	% some rendering frames in order to speed up the simulation
+	% approximate runtime is 14 seconds
 	
 	
     clear global
@@ -71,7 +74,6 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 		IT_STATS.num_agents(N_IT+1) = length(agents);
 		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
-		IT_STATS.pollen_at_hive(N_IT+1) = 0;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
 		plot_results(nsteps,fastmode); %updates results figures and structures
 	end

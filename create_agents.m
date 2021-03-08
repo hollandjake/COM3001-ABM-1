@@ -1,36 +1,26 @@
-function [agent]=create_agents(nb,ni)
+function agents=create_agents(num_agents,num_infected)
 
- %creates the objects representing each agent
- 
-%agent - cell array containing list of objects representing agents
-%nr - number of rabbits
-%nf - number of foxes
-
-%global parameters
-%ENV_DATA - data structure representing the environment (initialised in
-%create_environment.m)
-%MESSAGES is a data structure containing information that agents need to
-%broadcast to each other
-%PARAM - structure containing values of all parameters governing agent
-%behaviour for the current simulation
+	% CREATE_AGENTS Creates and initializes the agents
+	%
+	% A = create_agents(NA,NI) Creates NA+NI agents where NI of the agents
+	% will be infected and the rest, NI, will be normal agents
  
 global ENV_DATA MESSAGES PARAM 
   
-tot_agents = nb+ni;
-hloc=ENV_DATA.hive_location.*ones(tot_agents,1);      %generate random initial positions for rabbits
-iloc=ENV_DATA.hive_location.*ones(tot_agents,1);      %generate random initial positions for foxes
+tot_agents = num_agents+num_infected;
+positions=ENV_DATA.hive_location.*ones(tot_agents,1); %generate initial positions for agents
 
-MESSAGES.pos=[hloc;iloc];
+MESSAGES.pos=positions;
 
-%generate all health bee agents and record their positions in ENV_MAT_R
-agent = cell(tot_agents);
-for r=1:nb
-    pos=hloc(r,:);
-    agent{r}=bee(pos,false);
+%generate all health bee agents
+agents = cell(tot_agents);
+for i=1:num_agents
+    pos=positions(i,:);
+    agents{i}=bee(pos,false);
 end
 
-%generate all infected bee agents and record their positions in ENV_MAT_F
-for f=nb+1:tot_agents
-    pos=iloc(f-nb,:);
-    agent{f}=bee(pos,true);
+%generate all infected bee agents
+for i=num_agents+1:tot_agents
+    pos=positions(i,:);
+    agents{i}=bee(pos,true);
 end
