@@ -1,27 +1,30 @@
 function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 
-	%ECO_LAB  agent-based predator-prey model, developed for
-	%demonstration purposes only for University of Sheffield module
-	%COM3001/6006/6009
-
-	%AUTHOR Dawn Walker d.c.walker@sheffield.ac.uk
-	%Created April 2008
-
-	%ecolab(size,nr,nf,nsteps)
-	%size = size of model environmnet in km (sugested value for plotting
-	%purposes =50)
-	%nr - initial number of rabbit agents
-	%nf - initial number of fox agents
-	%nsteps - number of iterations required
-
-	%definition of global variables:
-	%N_IT - current iteration number
-	%IT_STATS  -  is data structure containing statistics on model at each
-	%iteration (number of agents etc). iniitialised in initialise_results.m
-	%ENV_DATA - data structure representing the environment (initialised in
-	%create_environment.m)
-
-    %clear any global variables/ close figures from previous simulations
+	%ecolab
+	%ecolab(
+	%		size                  Size of the grid - it will be size x size
+	%
+	%		num_flowers           Number of flowers
+	%
+	%		number_of_agents      Number of bees
+	%
+	%		number_of_infected    Number of bees infected (this is included
+	%						      in the number_of_agents)
+	%
+	%		number_of_steps       Number of iterations
+	%
+	%		<optional args>
+	%		'seed', 0             Random number used for seeding the
+	%		randomiser
+	%
+	%		'fastmode', true      Skip some rendering to speed up
+	%		processing (is disabled if savefile is enabled)
+	%
+	%		'savefile', true      Save an mp4 of the figure
+	%)
+	% e.g. ecolab(10, 25, 10, 2, 100, 'seed', 5, 'fastmode', true)
+	
+	
     clear global
     close all
 
