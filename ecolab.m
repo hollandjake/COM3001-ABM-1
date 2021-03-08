@@ -70,7 +70,7 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
 		IT_STATS.pollen_at_hive(N_IT+1) = 0;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
-% 		plot_results(nsteps,fastmode); %updates results figures and structures
+		plot_results(nsteps,fastmode); %updates results figures and structures
 	end
 	
 	filename= sprintf("results/seed_%d_tot_%d_inf_%d.mat",seed,na,ni);
@@ -78,13 +78,6 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 	IT_STATS = rmfield(IT_STATS,'VIDEO_CAPTURE');
 	save(filename, 'IT_STATS', 'ENV_DATA');
 	IT_STATS.VIDEO_CAPTURE = VID;
-	
-	% Finished processing so now just render all the frames
-	for n_it=1:nsteps
-		N_IT = n_it;
-		ENV_DATA.pollen = permute(IT_STATS.pollen_distribution(N_IT+1, :, :), [2 3 1]);
-		plot_results(nsteps, fastmode);
-	end
 	
 	if ~isempty(IT_STATS.VIDEO_CAPTURE)
 		close(IT_STATS.VIDEO_CAPTURE);
