@@ -29,5 +29,50 @@ classdef bee   %declares bee object
 				b.max_pollen = PARAM.BEE_MAX_POLLEN_NORMAL;
 			end
         end
+
+        function bee=update(bee)
+        	should_move = true;
+
+        	% If bee is full then it should just go back to the hive
+        	if bee.collected_pollen == bee.max_pollen
+        		bee.target = bee.hive_location;
+
+				% If bee is ontop of the hive (within 2 d.p.)
+				if round(bee.pos, 2) == bee.hive_location
+					bee = deposit_pollen(bee);
+				end
+        	else
+        		% If bee doesnt have a target then try to find a flower
+                if isempty(bee.target)
+                    bee.target = find_flower(bee);
+                end
+
+                % If we have a target location
+                if ~isempty(bee.target)
+					
+                    % If bee is ontop of the target (within 2 d.p.)
+                    if round(bee.pos,2) == bee.target
+                        % Collect pollen from the flower
+                        [bee, new_pollen] = collect_pollen(bee);
+
+                        % If it didnt collect any pollen then it 
+						% should move
+                        if new_pollen > 0
+                            should_move = false;
+                        else
+                            % remove target so it can wonder around looking
+                            % for new flower
+                            bee.target = [];
+                            should_move = true;
+                        end
+                    end
+                end
+        	end
+
+			% If the bee should move then it can do so
+            if should_move
+                bee = move(bee);
+            end
+        end
     end
 end

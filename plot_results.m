@@ -25,7 +25,7 @@ function plot_results(nsteps,fastmode)
     %write results to the screen
 	num_agents = IT_STATS.num_agents(N_IT + 1);
 	pollen_remaining = IT_STATS.pollen_remaining;
-	pollen_at_hive = IT_STATS.pollen_at_hive;
+	pollen_at_hive = cumsum(IT_STATS.pollen_at_hive);
 	pollen_transporting = IT_STATS.pollen_transporting;
     disp(strcat('Iteration = ',num2str(N_IT + 1)));
 	disp(strcat('No. agents = ',num2str(num_agents)));
@@ -86,14 +86,17 @@ function plot_results(nsteps,fastmode)
 		
 		subplot(4,1,4);
 		
-		y = [pollen_at_hive(1:N_IT+1);...
-			pollen_at_hive(1:N_IT+1)+pollen_transporting(1:N_IT+1);...
-			ones(1,N_IT+1)*ENV_DATA.total_pollen;...
-		]';
+		h = pollen_at_hive(1:N_IT+1);
+		t = pollen_transporting(1:N_IT+1);
+		r = ones(1,N_IT+1)*ENV_DATA.total_pollen;
+		
+		y = [h;t;r-h-t]';
 	
 		area(0:N_IT, y, 'EdgeAlpha', 0);
 		colororder([0.9290 0.6940 0.1250; 0 0 0; 0.4660 0.6740 0.1880]);
 		axis([0 nsteps 0 ENV_DATA.total_pollen]);
+		
+		legend({'Pollen at Hive', 'Pollen Collected', 'Total Pollen'}, 'Location', 'best' );
 		
 		set(DISPLAY.fig, 'Name', ['Iteration ' num2str(N_IT) '/' num2str(nsteps)]);
         drawnow

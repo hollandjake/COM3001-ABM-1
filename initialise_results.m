@@ -25,6 +25,9 @@ function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file)
 
 
 	if save_file
+		if ~exist("results/", 'dir')
+		   mkdir("results/")
+		end
 		filename = sprintf("results/seed_%d_tot_%d_inf_%d",seed,num_agents,num_infected);
 		IT_STATS.VIDEO_CAPTURE = VideoWriter(filename, 'MPEG-4');
 		IT_STATS.VIDEO_CAPTURE.FrameRate = 10;
