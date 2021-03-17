@@ -74,7 +74,6 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 	for n_it=1:nsteps                   %the main execution loop
 		N_IT=n_it;
 		[agents, collected_pollen]=agnt_solve(agents);     %the function which calls the rules
-		IT_STATS.num_agents(N_IT+1) = length(agents);
 		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;

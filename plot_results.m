@@ -93,7 +93,7 @@ function plot_results(nsteps,fastmode,noshow)
 	
 		area(0:N_IT, y, 'EdgeAlpha', 0);
 		colororder([0.9290 0.6940 0.1250; 0.9290 0.3940 0; 0 0 0]);
-		axis([0 nsteps 0 max(h)+max(h_i)+max(t)]);
+		axis([0 nsteps 0 max(max(h)+max(h_i)+max(t),1)]);
 		
 		legend({'Pollen at Hive (FROM NORMAL)','Pollen at Hive (FROM INFECTED)', 'Pollen Collected'}, 'Location', 'best' );
 		
