@@ -9,8 +9,7 @@ function is_infected = get_infected(agents)
 	n = length(agents);
 	is_infected = zeros(n,1);
 	
-	parfor i=1:n
-		agent = agents{i};
-		is_infected(i) = agent.is_infected
+	for i=1:n
+		is_infected(i) = agents{i}.is_infected;
 	end
 end

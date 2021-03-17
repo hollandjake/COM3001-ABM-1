@@ -1,4 +1,4 @@
-function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file)
+function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file,noshow)
 
 	% INITIALISE_RESULTS initialises the IT_STATS global which is
 	% responsible for tracking the history of the simulation
@@ -11,12 +11,13 @@ function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file)
 
 	global  IT_STATS ENV_DATA 
 
-	IT_STATS=struct('num_agents',zeros(1,nsteps+1),...			% total no. agents in model per iteration
-					 'pollen_remaining',zeros(1,nsteps+1),...	% remaining pollen level
-					 'pollen_at_hive',zeros(1,nsteps+1),...     % pollen which has been brought back to the hive
-					 'pollen_transporting', zeros(1,nsteps+1),... % pollen attached to agents
-					 'pollen_distribution', zeros(nsteps+1,size,size),... % distribution of pollen over time
-					 'agents', zeros(nsteps+1,num_agents));				% list of agents
+	IT_STATS=struct('num_agents',zeros(1,nsteps+1),...						% total no. agents in model per iteration
+					 'pollen_remaining',zeros(1,nsteps+1),...				% remaining pollen level
+					 'pollen_at_hive_normal',zeros(1,nsteps+1),...			% pollen which has been brought back to the hive
+					 'pollen_at_hive_infected',zeros(1,nsteps+1),...		% pollen which has been brought back to the hive
+					 'pollen_transporting', zeros(1,nsteps+1),...			% pollen attached to agents
+					 'pollen_distribution', zeros(nsteps+1,size,size),...	% distribution of pollen over time
+					 'agents', zeros(nsteps+1,num_agents));					% list of agents
 
 	tf=sum(sum(ENV_DATA.pollen));  %remaining pollen is summed over all squares in the environment
 	IT_STATS.num_agents(1)=num_agents+num_infected;
@@ -24,7 +25,7 @@ function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file)
 	IT_STATS.pollen_distribution(1, :, :) = ENV_DATA.pollen;
 
 
-	if save_file
+	if save_file && ~noshow
 		if ~exist("results/", 'dir')
 		   mkdir("results/")
 		end

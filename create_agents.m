@@ -12,15 +12,17 @@ positions=ENV_DATA.hive_location.*ones(tot_agents,1); %generate initial position
 
 MESSAGES.pos=positions;
 
-%generate all health bee agents
 agents = cell(tot_agents);
-for i=1:num_agents
-    pos=positions(i,:);
-    agents{i}=bee(pos,false);
-end
+
 
 %generate all infected bee agents
 for i=num_agents+1:tot_agents
     pos=positions(i,:);
     agents{i}=bee(pos,true);
+end
+
+%generate all health bee agents
+for i=1:num_agents
+    pos=positions(i,:);
+    agents{i}=bee(pos,false);
 end

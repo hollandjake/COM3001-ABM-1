@@ -1,10 +1,10 @@
-function plot_results(nsteps,fastmode)
+function plot_results(nsteps,fastmode,noshow)
 	
 	% PLOT_RESULTS plot the results to the figure
 	%
 	% nsteps	= number of iterations
 	% fastmode	= boolean indicating whether to save video to file 
-
+	
 	
 	% Use hexagons as markers for hive
 	hex = [-sqrt(3)/5 -1/5; 
@@ -21,15 +21,21 @@ function plot_results(nsteps,fastmode)
 	if isempty(start_time)
 		start_time = clock; 
 	end
+	
+	disp(strcat('Iteration = ',num2str(N_IT + 1)));
+	if noshow && N_IT<nsteps
+		return
+	end
 
     %write results to the screen
 	num_agents = IT_STATS.num_agents(N_IT + 1);
 	pollen_remaining = IT_STATS.pollen_remaining;
-	pollen_at_hive = cumsum(IT_STATS.pollen_at_hive);
+	pollen_at_hive_normal = cumsum(IT_STATS.pollen_at_hive_normal);
+	pollen_at_hive_infected = cumsum(IT_STATS.pollen_at_hive_infected);
 	pollen_transporting = IT_STATS.pollen_transporting;
-    disp(strcat('Iteration = ',num2str(N_IT + 1)));
 	disp(strcat('No. agents = ',num2str(num_agents)));
-	disp(strcat('Pollen at Hive = ',num2str(pollen_at_hive(N_IT + 1))));
+	disp(strcat('Pollen at Hive (NORM) = ',num2str(pollen_at_hive_normal(N_IT + 1))));
+	disp(strcat('Pollen at Hive (INF)  = ',num2str(pollen_at_hive_infected(N_IT + 1))));
 	disp(strcat('Pollen Remaining = ',num2str(pollen_remaining(N_IT + 1))));
 	disp(strcat('Pollen Transporting = ',num2str(pollen_transporting(N_IT + 1))));
 	
@@ -40,13 +46,9 @@ function plot_results(nsteps,fastmode)
 		check_for_figure()
 		
 		% Calculate remaining time and display
-		elapsed = etime(clock, start_time);
-		disp(elapsed);
-		seconds_per_tick = elapsed / N_IT;
+		elapsed_time = etime(clock, start_time);
+		seconds_per_tick = elapsed_time / N_IT;
 		time_remaining = seconds_per_tick * (nsteps - N_IT);
-		clf('reset')
-		time_string = ['Approx Time Left  ', num2str(time_remaining), 's'];
-		annotation('textbox', [0 1 0 0], 'String', time_string, 'FitBoxToText', 'on');
 		
         %create plot of agent locations. 	
 		subplot(4,1,[1,2,3]);
@@ -86,7 +88,7 @@ function plot_results(nsteps,fastmode)
 		
 		subplot(4,1,4);
 		
-		h = pollen_at_hive(1:N_IT+1);
+		h = pollen_at_hive_normal(1:N_IT+1);
 		t = pollen_transporting(1:N_IT+1);
 		r = ones(1,N_IT+1)*ENV_DATA.total_pollen;
 		
@@ -98,7 +100,7 @@ function plot_results(nsteps,fastmode)
 		
 		legend({'Pollen at Hive', 'Pollen Collected', 'Total Pollen'}, 'Location', 'best' );
 		
-		set(DISPLAY.fig, 'Name', ['Iteration ' num2str(N_IT) '/' num2str(nsteps)]);
+		set(DISPLAY.fig, 'Name', ['Iteration ' num2str(N_IT) '/' num2str(nsteps), ', Time [E: ', num2str(round(elapsed_time,2)), 's, R: ', num2str(round(time_remaining, 2)), 's]']);
         drawnow
 		
 		% Save the frame for the video

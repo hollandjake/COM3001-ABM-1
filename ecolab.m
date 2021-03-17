@@ -38,13 +38,16 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 	
 	parser = inputParser;
 	addParameter(parser, 'seed', 0, @isnumeric);
-	addParameter(parser, 'fastmode', true, @isboolean);
+	addParameter(parser, 'fastmode', true, @islogical);
 	addParameter(parser, 'savefile', false, @islogical);
+	addParameter(parser, 'noshow', false, @islogical);
+
 
 	parse(parser, varargin{:});
 	
 	fastmode = parser.Results.fastmode;
 	save_file = parser.Results.savefile;
+	noshow = parser.Results.noshow;
 	
 	% Populate the random number generator with the seed
 	seed = parser.Results.seed;
@@ -64,7 +67,7 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
     create_environment(size);           %creates environment data structure, given an environment size
     agents=create_agents(na,ni);        %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
     create_messages(agents, nsteps);	%sets up the initial message lists
-    initialise_results(seed,na,ni,nsteps,size,save_file);   %initilaises structure for storing results
+    initialise_results(seed,na,ni,nsteps,size,save_file, noshow);   %initilaises structure for storing results
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL EXECUTION
 	
@@ -75,18 +78,17 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
-		plot_results(nsteps,fastmode); %updates results figures and structures
+		plot_results(nsteps,fastmode, noshow); %updates results figures and structures
+	end
+	
+	if ~isempty(IT_STATS.VIDEO_CAPTURE)
+		VID = IT_STATS.VIDEO_CAPTURE;
+		close(VID);
 	end
 	
 	filename= sprintf("results/seed_%d_tot_%d_inf_%d.mat",seed,na,ni);
-	VID = IT_STATS.VIDEO_CAPTURE;
 	IT_STATS = rmfield(IT_STATS,'VIDEO_CAPTURE');
 	save(filename, 'IT_STATS', 'ENV_DATA');
-	IT_STATS.VIDEO_CAPTURE = VID;
-	
-	if ~isempty(IT_STATS.VIDEO_CAPTURE)
-		close(IT_STATS.VIDEO_CAPTURE);
-	end
 	
 	clear global
 end
