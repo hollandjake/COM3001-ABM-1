@@ -11,7 +11,7 @@ function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file,n
 
 	global  IT_STATS ENV_DATA 
 
-	IT_STATS=struct('num_agents',zeros(1,nsteps+1),...						% total no. agents in model per iteration
+	IT_STATS=struct('num_agents',num_agents+num_infected,...						% total no. agents in model per iteration
 					 'pollen_remaining',zeros(1,nsteps+1),...				% remaining pollen level
 					 'pollen_at_hive_normal',zeros(1,nsteps+1),...			% pollen which has been brought back to the hive
 					 'pollen_at_hive_infected',zeros(1,nsteps+1),...		% pollen which has been brought back to the hive
@@ -23,6 +23,7 @@ function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file,n
 	IT_STATS.num_agents(1)=num_agents+num_infected;
 	IT_STATS.pollen_remaining(1)=tf;
 	IT_STATS.pollen_distribution(1, :, :) = ENV_DATA.pollen;
+	IT_STATS.start_time = clock;
 
 
 	if save_file && ~noshow

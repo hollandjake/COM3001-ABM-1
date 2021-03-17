@@ -42,7 +42,7 @@ classdef bee   %declares bee object
         	should_move = true;
 
         	% If bee is full then it should just go back to the hive
-        	if (bee.collected_pollen == bee.max_pollen) | (bee.distance_travelled >= bee.max_distance-bee.speed)
+        	if (bee.collected_pollen == bee.max_pollen) || (bee.distance_travelled >= bee.max_distance-bee.speed)
         		bee.target = bee.hive_location;
 				bee.distance_travelled = 0;
 
@@ -72,7 +72,7 @@ classdef bee   %declares bee object
                         else
                             % remove target so it can wonder around looking
                             % for new flower
-                            bee.target = [];
+                            bee.target = '';
                             should_move = true;
                         end
                     end

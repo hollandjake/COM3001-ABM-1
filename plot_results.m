@@ -16,19 +16,21 @@ function plot_results(nsteps,fastmode,noshow)
 			-sqrt(3)/5 -1/5];
 
     global N_IT IT_STATS ENV_DATA MESSAGES CONTROL_DATA DISPLAY
-	persistent start_time;
+
+	% Calculate remaining time and display
+	elapsed_time = etime(clock, IT_STATS.start_time);
+	seconds_per_tick = elapsed_time / N_IT;
+	time_remaining = seconds_per_tick * (nsteps - N_IT);
 	
-	if isempty(start_time)
-		start_time = clock; 
-	end
+	time_output = ['Iteration ' num2str(N_IT) '/' num2str(nsteps), ', Time [E: ', num2str(round(elapsed_time,2)), 's, R: ', num2str(round(time_remaining, 2)), 's]'];
 	
-	disp(strcat('Iteration = ',num2str(N_IT + 1)));
+	disp(time_output);
 	if noshow && N_IT<nsteps
 		return
 	end
 
     %write results to the screen
-	num_agents = IT_STATS.num_agents(N_IT + 1);
+	num_agents = IT_STATS.num_agents;
 	pollen_remaining = IT_STATS.pollen_remaining;
 	pollen_at_hive_normal = cumsum(IT_STATS.pollen_at_hive_normal);
 	pollen_at_hive_infected = cumsum(IT_STATS.pollen_at_hive_infected);
@@ -44,11 +46,6 @@ function plot_results(nsteps,fastmode,noshow)
     if (fastmode==false) || (N_IT>=nsteps) || ~isempty(IT_STATS.VIDEO_CAPTURE) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
 		
 		check_for_figure()
-		
-		% Calculate remaining time and display
-		elapsed_time = etime(clock, start_time);
-		seconds_per_tick = elapsed_time / N_IT;
-		time_remaining = seconds_per_tick * (nsteps - N_IT);
 		
         %create plot of agent locations. 	
 		subplot(4,1,[1,2,3]);
@@ -89,18 +86,18 @@ function plot_results(nsteps,fastmode,noshow)
 		subplot(4,1,4);
 		
 		h = pollen_at_hive_normal(1:N_IT+1);
+		h_i = pollen_at_hive_infected(1:N_IT+1);
 		t = pollen_transporting(1:N_IT+1);
-		r = ones(1,N_IT+1)*ENV_DATA.total_pollen;
 		
-		y = [h;t;r-h-t]';
+		y = [h;h_i;t]';
 	
 		area(0:N_IT, y, 'EdgeAlpha', 0);
-		colororder([0.9290 0.6940 0.1250; 0 0 0; 0.4660 0.6740 0.1880]);
-		axis([0 nsteps 0 ENV_DATA.total_pollen]);
+		colororder([0.9290 0.6940 0.1250; 0.9290 0.3940 0; 0 0 0]);
+		axis([0 nsteps 0 max(h)+max(h_i)+max(t)]);
 		
-		legend({'Pollen at Hive', 'Pollen Collected', 'Total Pollen'}, 'Location', 'best' );
+		legend({'Pollen at Hive (FROM NORMAL)','Pollen at Hive (FROM INFECTED)', 'Pollen Collected'}, 'Location', 'best' );
 		
-		set(DISPLAY.fig, 'Name', ['Iteration ' num2str(N_IT) '/' num2str(nsteps), ', Time [E: ', num2str(round(elapsed_time,2)), 's, R: ', num2str(round(time_remaining, 2)), 's]']);
+		set(DISPLAY.fig, 'Name', time_output);
         drawnow
 		
 		% Save the frame for the video

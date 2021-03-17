@@ -5,7 +5,7 @@ function bee = move(bee)
 	% If there isn't a target for the bee it will wonder randomly
 	% otherwise it will move towards the target
 
-	global ENV_DATA IT_STATS N_IT
+	global ENV_DATA
 
 	if ~isempty(bee.target)
 		% Move towards target
