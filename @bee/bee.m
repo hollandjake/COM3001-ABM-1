@@ -4,12 +4,14 @@ classdef bee   %declares bee object
 		target				% [x,y]  target location
 		speed				% (int)  travel speed
 		direction			% [x,y]  current direction
-		sensing_radius		% (int)  Radius where it can see
 		collected_pollen	% (int)  Pollen stored on the bee
-		max_pollen			% (int)  Maximum pollen that can be stored on a bee
-		is_infected			% (bool) Whether the bee has been infected with a mite
 		distance_travelled	% (int)  Distance travelled
+	end
+	properties (SetAccess=immutable)
 		max_distance		% (int)  Max distance to travel
+		is_infected			% (bool) Whether the bee has been infected with a mite
+		max_pollen			% (int)  Maximum pollen that can be stored on a bee
+		sensing_radius		% (int)  Radius where it can see
 	end
 	properties (GetAccess=private, SetAccess=immutable)
 		hive_location		% [x,y]  location of hive
