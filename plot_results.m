@@ -25,7 +25,7 @@ function plot_results(nsteps,fastmode,noshow)
 	time_output = ['Iteration ' num2str(N_IT) '/' num2str(nsteps), ', Time [E: ', num2str(round(elapsed_time,2)), 's, R: ', num2str(round(time_remaining, 2)), 's]'];
 	
 	disp(time_output);
-	if noshow && N_IT<nsteps
+	if noshow && N_IT<nsteps && N_IT > 1
 		return
 	end
 
@@ -43,7 +43,7 @@ function plot_results(nsteps,fastmode,noshow)
 	
 
     %plot line graphs of agent numbers and remaining food
-    if (fastmode==false) || (N_IT>=nsteps) || ~isempty(IT_STATS.VIDEO_CAPTURE) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
+    if (fastmode==false) || (N_IT>=nsteps) || (N_IT == 1) || ~isempty(IT_STATS.VIDEO_CAPTURE) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
 		
 		check_for_figure()
 		

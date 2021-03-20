@@ -9,7 +9,7 @@ function create_params(num_flowers)
 	
 	%Environment
 	PARAM.NUM_FLOWERS = num_flowers;		% Total number of flowers distributed throughout the map
-	PARAM.MIN_FLOWER_POLLEN = 114;			% mg    1000/1
+	PARAM.MIN_FLOWER_POLLEN = 50;			% mg    1000/1
 	PARAM.MAX_FLOWER_POLLEN	= 114;			% mg
 		
 	%BEE
