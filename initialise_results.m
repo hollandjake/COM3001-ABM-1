@@ -1,4 +1,4 @@
-function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file,noshow)
+function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file,noshow, showlast)
 
 	% INITIALISE_RESULTS initialises the IT_STATS global which is
 	% responsible for tracking the history of the simulation
@@ -26,7 +26,7 @@ function initialise_results(seed,num_agents,num_infected,nsteps,size,save_file,n
 	IT_STATS.start_time = clock;
 
 
-	if save_file && ~noshow
+	if save_file && (~noshow || ~showlast)
 		if ~exist("results/", 'dir')
 		   mkdir("results/")
 		end

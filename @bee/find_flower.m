@@ -5,9 +5,7 @@ function target = find_flower(bee)
 	% returns a coordinate [x, y] indicating the target that has been found
 
 	global ENV_DATA;
-	
-	target = [];
-	
+		
 	bee_pos = round(bee.pos);
 	
 	radius = bee.sensing_radius;
@@ -18,8 +16,8 @@ function target = find_flower(bee)
 
 	flower_positions = ENV_DATA.flower_positions;
 	
-	x = flower_positions(:,2);
-	y = flower_positions(:,1);
+	x = flower_positions(:,1);
+	y = flower_positions(:,2);
 		
 	squared_dist = (x-bee_offset(:,1)).^2+(y-bee_offset(:,2)).^2;
 	
@@ -32,10 +30,11 @@ function target = find_flower(bee)
 	poll = ENV_DATA.pollen(indicies);
 	matching_indicies = poll > 0;
 	squared_dist = squared_dist(matching_indicies);
-
 	if ~isempty(squared_dist)
+		x = x(matching_indicies);
+		y = y(matching_indicies);
 		n = ceil(min(1 + abs(randn), size(squared_dist,1)));
-		[d, idx] = topkrows(squared_dist, n, 'ascend');
+		[~, idx] = topkrows(squared_dist, n, 'ascend');
 		t = [x(idx(end)),y(idx(end))];
 
 		target = mins - [1,1] + t;

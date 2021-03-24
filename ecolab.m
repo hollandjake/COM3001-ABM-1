@@ -41,13 +41,14 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 	addParameter(parser, 'fastmode', true, @islogical);
 	addParameter(parser, 'savefile', false, @islogical);
 	addParameter(parser, 'noshow', false, @islogical);
-
+	addParameter(parser, 'showlast', false, @islogical);
 
 	parse(parser, varargin{:});
 	
 	fastmode = parser.Results.fastmode;
 	save_file = parser.Results.savefile;
 	noshow = parser.Results.noshow;
+	showlast = parser.Results.showlast;
 	
 	% Populate the random number generator with the seed
 	seed = parser.Results.seed;
@@ -67,7 +68,7 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
     create_environment(size);           %creates environment data structure, given an environment size
     agents=create_agents(na,ni);        %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
     create_messages(agents, nsteps);	%sets up the initial message lists
-    initialise_results(seed,na,ni,nsteps,size,save_file, noshow);   %initilaises structure for storing results
+    initialise_results(seed,na,ni,nsteps,size,save_file, noshow, showlast);   %initilaises structure for storing results
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL EXECUTION
 	
@@ -77,7 +78,7 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 		IT_STATS.pollen_remaining(N_IT+1) = sum(sum(ENV_DATA.pollen));
 		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
 		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
-		plot_results(nsteps,fastmode, noshow); %updates results figures and structures
+		plot_results(nsteps,fastmode, noshow,showlast); %updates results figures and structures
 	end
 	
 	if ~isempty(IT_STATS.VIDEO_CAPTURE)

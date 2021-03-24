@@ -1,4 +1,4 @@
-function plot_results(nsteps,fastmode,noshow)
+function plot_results(nsteps,fastmode,noshow,showlast)
 	
 	% PLOT_RESULTS plot the results to the figure
 	%
@@ -25,7 +25,7 @@ function plot_results(nsteps,fastmode,noshow)
 	time_output = ['Iteration ' num2str(N_IT) '/' num2str(nsteps), ', Time [E: ', num2str(round(elapsed_time,2)), 's, R: ', num2str(round(time_remaining, 2)), 's]'];
 	
 	disp(time_output);
-	if noshow && N_IT<nsteps && N_IT > 1
+	if N_IT<nsteps && (noshow || (showlast && N_IT > 1))
 		return
 	end
 
@@ -40,6 +40,10 @@ function plot_results(nsteps,fastmode,noshow)
 	disp(strcat('Pollen at Hive (INF)  = ',num2str(pollen_at_hive_infected(N_IT + 1))));
 	disp(strcat('Pollen Remaining = ',num2str(pollen_remaining(N_IT + 1))));
 	disp(strcat('Pollen Transporting = ',num2str(pollen_transporting(N_IT + 1))));
+
+	if noshow
+		return
+	end
 	
 
     %plot line graphs of agent numbers and remaining food

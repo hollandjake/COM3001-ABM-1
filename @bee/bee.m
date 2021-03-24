@@ -48,7 +48,6 @@ classdef bee   %declares bee object
         	if (bee.collected_pollen == bee.max_pollen) || (bee.distance_travelled >= bee.max_distance-bee.speed)
         		bee.target = bee.hive_location;
 				bee.distance_travelled = 0;
-				bee = move(bee);
 
 				% If bee is ontop of the hive (within 2 d.p.)
 				if round(bee.pos, 2) == bee.hive_location
