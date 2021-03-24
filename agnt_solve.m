@@ -8,7 +8,7 @@ function [agents, total_collected_pollen] = agnt_solve(agents)
 
 	n=length(agents); %current no. of agents
 	total_collected_pollen = zeros(1, n);
-
+	
 	%execute existing agent update loop
 	for cn=1:n
 		bee=agents{cn}.update();
