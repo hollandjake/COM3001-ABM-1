@@ -1,142 +1,115 @@
-function plot_results(agent,nsteps,fmode,outImages)
+function plot_results(nsteps,fastmode,noshow,showlast)
+	
+	% PLOT_RESULTS plot the results to the figure
+	%
+	% nsteps	= number of iterations
+	% fastmode	= boolean indicating whether to save video to file 
+	
+	
+	% Use hexagons as markers for hive
+	hex = [-sqrt(3)/5 -1/5; 
+			0 -2/5;  
+			+sqrt(3)/5 -1/5;
+			+sqrt(3)/5 +1/5;
+			0  2/5;
+			-sqrt(3)/5 1/5;
+			-sqrt(3)/5 -1/5];
 
-    %Plots 2d patch images of agents onto background 
-    %%%%%%%%%%%
-    %plot_results(agent,nr,nf)
-    %%%%%%%%%%%
-    %agent - current list of agent structures
-    %nr -  no. rabbits
-    %nf -  no. rabbits
+    global N_IT IT_STATS ENV_DATA MESSAGES CONTROL_DATA DISPLAY
 
-    % Modified by D Walker 3/4/08
-
-    global N_IT IT_STATS ENV_DATA MESSAGES CONTROL_DATA
-    %declare variables that can be seen by all functions
-    %N_IT is current iteration number
-    %ENV_DATA - data structure representing the environment (initialised in
-    %create_environment.m)
-    %IT_STATS is data structure containing statistics on model at each
-    %iteration (no. agents etc)
-    %MESSAGES is a data structure containing information that agents need to
-    %broadcast to each other
+	% Calculate remaining time and display
+	elapsed_time = etime(clock, IT_STATS.start_time);
+	seconds_per_tick = elapsed_time / N_IT;
+	time_remaining = seconds_per_tick * (nsteps - N_IT);
+	
+	time_output = ['Iteration ' num2str(N_IT) '/' num2str(nsteps), ', Time [E: ', num2str(round(elapsed_time,2)), 's, R: ', num2str(round(time_remaining, 2)), 's]'];
+	
+	disp(time_output);
+	if N_IT<nsteps && (noshow || (showlast && N_IT > 1))
+		return
+	end
 
     %write results to the screen
-    nr=IT_STATS.tot_r;
-    nf=IT_STATS.tot_f;
-    disp(strcat('Iteration = ',num2str(N_IT)))
-    disp(strcat('No. new rabbits = ',num2str(IT_STATS.div_r(N_IT+1))))
-    disp(strcat('No. new foxes = ',num2str(IT_STATS.div_f(N_IT+1))))
-    disp(strcat('No. agents migrating = ',num2str(IT_STATS.mig(N_IT+1))))
-    disp(strcat('No. rabbits dying = ',num2str(IT_STATS.died_r(N_IT+1))))
-    disp(strcat('No. foxes dying = ',num2str(IT_STATS.died_f(N_IT+1))))
-    disp(strcat('No. rabbits eaten = ',num2str(IT_STATS.eaten(N_IT+1))))
+	num_agents = IT_STATS.num_agents;
+	pollen_remaining = IT_STATS.pollen_remaining;
+	pollen_at_hive_normal = cumsum(IT_STATS.pollen_at_hive_normal);
+	pollen_at_hive_infected = cumsum(IT_STATS.pollen_at_hive_infected);
+	pollen_transporting = IT_STATS.pollen_transporting;
+	disp(strcat('No. agents = ',num2str(num_agents)));
+	disp(strcat('Pollen at Hive (NORM) = ',num2str(pollen_at_hive_normal(N_IT + 1))));
+	disp(strcat('Pollen at Hive (INF)  = ',num2str(pollen_at_hive_infected(N_IT + 1))));
+	disp(strcat('Pollen Remaining = ',num2str(pollen_remaining(N_IT + 1))));
+	disp(strcat('Pollen Transporting = ',num2str(pollen_transporting(N_IT + 1))));
+
+	if noshow
+		return
+	end
+	
 
     %plot line graphs of agent numbers and remaining food
-    if (fmode==false) || (N_IT==nsteps) || ((fmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
-        
-        %Plotting takes time so fmode has been introduced to only plot every n=CONTROL_DATA.fmode_display_every iterations
-        %This value increases with the number of agents (see ecolab.m L57-61) as plotting more agents takes longer. 
-        %fmode can be turned off in the command line - see ecolab documentation
-
-        col{1}='r-';                   %set up colours that will represent different cell types red for rabbits, blue for foxes
-        col{2}='b-';
-
-        tot_food=IT_STATS.tfood;       %total food remaining
-        n=nr(N_IT+1)+nf(N_IT+1);             %current agent number
-        f2=figure(2);
-        set(f2,'Units','Normalized');
-        set(f2,'Position',[0.5 0.5 0.45 0.4]);
-
-        subplot(3,1,1),cla
-        subplot(3,1,1),plot((1:N_IT+1),nr(1:N_IT+1),col{1});
-        subplot(3,1,1),axis([0 nsteps 0 1.1*max(nr)]);
-        subplot(3,1,2),cla
-        subplot(3,1,2),plot((1:N_IT+1),nf(1:N_IT+1),col{2});
-        subplot(3,1,2),axis([0 nsteps 0 1.1*max(nf)]);
-        subplot(3,1,3),cla
-        subplot(3,1,3),plot((1:N_IT+1),tot_food(1:N_IT+1),'m-');
-        subplot(3,1,3),axis([0 nsteps 0 tot_food(1)]);
-        subplot(3,1,1),title('No. live rabbits');
-        subplot(3,1,2),title('No. live foxes');
-        subplot(3,1,3),title('Total food');
-        drawnow
-
-        %create plot of agent locations. 
-        f3=figure(3);
-
-        bm=ENV_DATA.bm_size;   
-        typ=MESSAGES.atype;
-        clf                             %clear previous plot
-        set(f3,'Units','Normalized');
-        set(f3,'Position',[0.05 0.05 0.66 0.66]);
-        v=(1:bm);
-        [X,Y]=meshgrid(v);
-        Z=ENV_DATA.food;
-        H=zeros(bm,bm);
-        hs=surf(Y,X,H,Z);               %plot food distribution on plain background
-        cm=colormap('gray');
-        icm=flipud(cm);
-        colormap(icm);
-        set(hs,'SpecularExponent',1);       %sets up lighting
-        set(hs,'SpecularStrength',0.1);
+    if (fastmode==false) || (N_IT>=nsteps) || (N_IT == 1) || ~isempty(IT_STATS.VIDEO_CAPTURE) || ((fastmode==true) && (rem(N_IT , CONTROL_DATA.fmode_display_every)==0))
+		
+		check_for_figure()
+		
+        %create plot of agent locations. 	
+		subplot(4,1,[1,2,3]);
+		imagesc(ENV_DATA.pollen);
+		colormap('summer');
+		axis('square');
+		
         hold on
+		
+		% Using the MESSAGES.pos system we can iterate over the agents much
+		% faster than using the iteration
+		agent_positions = MESSAGES.pos(N_IT+1, :, :);
+		healthy_agent_positions = permute(agent_positions(:, ~MESSAGES.is_infected, :),[2 3 1]);
+		infected_agent_positions = permute(agent_positions(:, ~~MESSAGES.is_infected, :),[2 3 1]);
+		
+		%Render the healthy agents
+		scatter(healthy_agent_positions(:, 1),healthy_agent_positions(:, 2),70,...
+			'Marker', 'o',...
+			'MarkerEdgeColor', 'k',...
+			'LineWidth', 2,...
+			'MarkerFaceColor', [1 1 0]);
+		
+		%Render the infected agents
+		scatter(infected_agent_positions(:,1),infected_agent_positions(:,2),70,...
+			'Marker', 'o',...
+			'MarkerEdgeColor', 'k',...
+			'LineWidth', 2,...
+			'MarkerFaceColor', [0.8 0 0]);
 
-        for cn=1:length(agent)                          %cycle through each agent in turn
-            if typ(cn)>0                                %only plot live agents
-                pos=get(agent{cn},'pos');               %extract current position    
-                if isa(agent{cn},'rabbit')              %choose plot colour depending on agent type
-                    ro=plot(pos(1),pos(2),'r*');
-                else   
-                    fo=plot(pos(1),pos(2),'b.'); 
-                    set(fo,'MarkerSize',30);
-                end
-            end
-        end
-
-        h=findobj(gcf,'type','surface');			%Once all cells are plotted, set up perspective, lighting etc.
-        set(h,'edgecolor','none');
-        lighting flat
-        h=findobj(gcf,'type','surface');
-        set(h,'linewidth',0.1)
-        set(h,'specularstrength',0.2)
-        axis off
-        axis equal
-        set(gcf,'color',[1 1 1]);
-
-        uicontrol('Style','pushbutton',...
-                  'String','PAUSE',...
-                  'Position',[20 20 60 20], ...
-                  'Callback', 'global ENV_DATA; ENV_DATA.pause=true; display(ENV_DATA.pause); clear ENV_DATA;'); 
-
-        while CONTROL_DATA.pause==true    % pause/resume functionality - allows pan and zoom during pause...
-            pan on
-            axis off
-            title(['Iteration no.= ' num2str(N_IT) '.  No. agents = ' num2str(n)]);
-            text(-2.6, 7.7, 'PAUSED', 'Color', 'r');
-            drawnow
-            uicontrol('Style','pushbutton',...
-                      'String','ZOOM IN',...
-                      'Position',[100 20 60 20],...
-                      'Callback','if camva <= 1;return;else;camva(camva-1);end');
-            uicontrol('Style','pushbutton',...
-                      'String','ZOOM OUT',...
-                      'Position',[180 20 60 20],...
-                      'Callback','if camva >= 179;return;else;camva(camva+1);end');
-
-            uicontrol('Style','pushbutton',...
-                      'String','RESUME',...
-                      'Position',[20 20 60 20], ...
-                      'Callback', 'global ENV_DATA; ENV_DATA.pause=false; clear ENV_DATA;'); 
-        end
-        title(['Iteration no.= ' num2str(N_IT) '.  No. agents = ' num2str(n)]);
-        axis off
-        drawnow 
-        if outImages==true  %this outputs images if outImage parameter set to true!!
-            if fmode==true; %this warning is to show not all iterations are being output if fmode=true!
-                    disp('WARNING*** fastmode set - To output all Images for a movie, set fmode to false(fast mode turned off) ');
-            end 
-            filenamejpg=[sprintf('%04d',N_IT)];
-            eval(['print -djpeg90 agent_plot_' filenamejpg]); %print new jpeg to create movie later
-        end
+        %Render the hive
+		patch('Faces', [1,2,3,4,5,6],...
+			'Vertices', hex+ENV_DATA.hive_location,...
+			'FaceColor',[0.9290 0.6940 0.1250],...
+			'LineWidth', 2);
+					
+		hold off
+		
+		subplot(4,1,4);
+		
+		h = pollen_at_hive_normal(1:N_IT+1);
+		h_i = pollen_at_hive_infected(1:N_IT+1);
+		t = pollen_transporting(1:N_IT+1);
+		
+		y = [h;h_i;t]';
+	
+		area(0:N_IT, y, 'EdgeAlpha', 0);
+		colororder([0.9290 0.6940 0.1250; 0.9290 0.3940 0; 0 0 0]);
+		axis([0 nsteps 0 max(max(h)+max(h_i)+max(t),1)]);
+		
+		legend({'Pollen at Hive (FROM NORMAL)','Pollen at Hive (FROM INFECTED)', 'Pollen Collected'}, 'Location', 'best' );
+		
+		set(DISPLAY.fig, 'Name', time_output);
+        drawnow
+		
+		% Save the frame for the video
+		if ~isempty(IT_STATS.VIDEO_CAPTURE)	
+			frame = getframe(DISPLAY.fig);
+			f1 = frame2im(frame);
+			f2 = imresize(f1, [840, 1120]);
+			writeVideo(IT_STATS.VIDEO_CAPTURE, f2);
+		end
     end
 end

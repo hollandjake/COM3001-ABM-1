@@ -1,22 +1,42 @@
-function create_params
+function create_params(num_flowers)
+	
+	% CREATE_PARAMS initializes the global PARAM which houses the constants
+	% used throught the program
 
-%set up breeding, migration and starvation threshold parameters. These
-%are all completely made up!
+	global PARAM
+	
+	PARAM.GRID_SCALE = 5;					% metres
+	
+	%Environment
+	PARAM.NUM_FLOWERS = num_flowers;		% Total number of flowers distributed throughout the map
+	PARAM.MIN_FLOWER_POLLEN = 50;			% mg    1000/1
+	PARAM.MAX_FLOWER_POLLEN	= 114;			% mg
+		
+	%BEE
+	PARAM.BEE_SPEED_NORMAL = 8.9408;		% m/s
+	PARAM.BEE_SPEED_NORMAL_FULL = 5.36448;	% m/s
+	PARAM.BEE_MAX_POLLEN_NORMAL	= 11;		% mg
+	PARAM.BEE_SENSING_RADIUS = 3200;		% metres
+	PARAM.BEE_MAX_DISTANCE_NORMAL = 1000;	% metres
 
-%PARAM - structure containing values of all parameters governing agent
-%behaviour for the current simulation
-
-global PARAM
-
-    PARAM.R_SPD=2;         %speed of movement - units per itn (rabbit)
-    PARAM.F_SPD=5;         %speed of movement - units per itn (fox)
-    PARAM.R_BRDFQ=10;      %breeding frequency - iterations
-    PARAM.F_BRDFQ=20;
-    PARAM.R_MINFOOD=0;      %minimum food threshold before agent dies 
-    PARAM.F_MINFOOD=0;
-    PARAM.R_FOODBRD=10;     %minimum food threshold for breeding
-    PARAM.F_FOODBRD=10;
-    PARAM.R_MAXAGE=50;      %maximum age allowed 
-    PARAM.F_MAXAGE=50;
+	
+% 	PARAM.BEE_SPEED_INFECTED = 4.5;			% m/s
+% 	PARAM.BEE_SPEED_INFECTED_FULL = 2.6;	% m/s
+	PARAM.BEE_MAX_POLLEN_INFECTED = PARAM.BEE_MAX_POLLEN_NORMAL * 0.8;		% mg
+	PARAM.BEE_SENSING_RADIUS_INFECTED = 100;% metres
+	PARAM.BEE_MAX_DISTANCE_INFECTED = 500;	% metres
+	
+	
+	PARAM.BEE_SPEED_NORMAL = PARAM.BEE_SPEED_NORMAL / PARAM.GRID_SCALE * 60;
+	PARAM.BEE_SPEED_NORMAL_FULL = PARAM.BEE_SPEED_NORMAL_FULL / PARAM.GRID_SCALE * 60;
+	
+	PARAM.BEE_SPEED_INFECTED = PARAM.BEE_SPEED_NORMAL;
+	PARAM.BEE_SPEED_INFECTED_FULL = PARAM.BEE_SPEED_NORMAL_FULL;
+	
+	PARAM.BEE_SENSING_RADIUS = PARAM.BEE_SENSING_RADIUS / PARAM.GRID_SCALE;
+	PARAM.BEE_SENSING_RADIUS_INFECTED = PARAM.BEE_SENSING_RADIUS_INFECTED / PARAM.GRID_SCALE;
+	
+	PARAM.BEE_MAX_DISTANCE_NORMAL = PARAM.BEE_MAX_DISTANCE_NORMAL / PARAM.GRID_SCALE;
+	PARAM.BEE_MAX_DISTANCE_INFECTED = PARAM.BEE_MAX_DISTANCE_INFECTED / PARAM.GRID_SCALE;
     
     

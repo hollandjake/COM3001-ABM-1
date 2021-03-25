@@ -1,45 +1,28 @@
-function [agent]=create_agents(nr,nf)
+function agents=create_agents(num_agents,num_infected)
 
- %creates the objects representing each agent
+	% CREATE_AGENTS Creates and initializes the agents
+	%
+	% A = create_agents(NA,NI) Creates NA+NI agents where NI of the agents
+	% will be infected and the rest, NI, will be normal agents
  
-%agent - cell array containing list of objects representing agents
-%nr - number of rabbits
-%nf - number of foxes
-
-%global parameters
-%ENV_DATA - data structure representing the environment (initialised in
-%create_environment.m)
-%MESSAGES is a data structure containing information that agents need to
-%broadcast to each other
-%PARAM - structure containing values of all parameters governing agent
-%behaviour for the current simulation
- 
- global ENV_DATA MESSAGES PARAM 
+global ENV_DATA MESSAGES PARAM 
   
-bm_size=ENV_DATA.bm_size;
-rloc=(bm_size-1)*rand(nr,2)+1;      %generate random initial positions for rabbits
-floc=(bm_size-1)*rand(nf,2)+1;      %generate random initial positions for foxes
+tot_agents = num_agents+num_infected;
+positions=ENV_DATA.hive_location.*ones(tot_agents,1); %generate initial positions for agents
 
-MESSAGES.pos=[rloc;floc];
+MESSAGES.pos=positions;
 
-%generate all rabbit agents and record their positions in ENV_MAT_R
-for r=1:nr
-    pos=rloc(r,:);
-    %create rabbit agents with random ages between 0 and 10 days and random
-    %food levels 20-40
-    age=ceil(rand*10);
-    food=ceil(rand*20)+20;
-    lbreed=round(rand*PARAM.R_BRDFQ);
-    agent{r}=rabbit(age,food,pos,PARAM.R_SPD,lbreed);
+agents = cell(tot_agents);
+
+
+%generate all infected bee agents
+for i=num_agents+1:tot_agents
+    pos=positions(i,:);
+    agents{i}=bee(pos,true);
 end
 
-%generate all fox agents and record their positions in ENV_MAT_F
-for f=nr+1:nr+nf
-    pos=floc(f-nr,:);
-    %create fox agents with random ages between 0 and 10 days and random
-    %food levels 20-40
-    age=ceil(rand*10);
-    food=ceil(rand*20)+20;
-    lbreed=round(rand*PARAM.F_BRDFQ);
-    agent{f}=fox(age,food,pos,PARAM.F_SPD,lbreed);
+%generate all health bee agents
+for i=1:num_agents
+    pos=positions(i,:);
+    agents{i}=bee(pos,false);
 end

@@ -1,20 +1,24 @@
 function create_environment(size)
 
-%function that populates the global data structure representing
-%environmental information
+	% CREATE_ENVIRONMENT creates the global environment data
+	%
+	% create_environment(S) creates an environment of size SxS
 
-%ENV_DATA is a data structure containing information about the model
-   %environment
-   %    ENV_DATA.shape - shape of environment - FIXED AS SQUARE
-   %    ENV_DATA.units - FIXED AS KM
-   %    ENV_DATA.bm_size - length of environment edge in km
-   %    ENV_DATA.food is  a bm_size x bm_size array containing distribution
-   %    of food
+	global ENV_DATA PARAM DISPLAY
 
-global ENV_DATA
+	ENV_DATA.units='metres';
+	ENV_DATA.bm_size=size;
 
-ENV_DATA.shape='square';
-ENV_DATA.units='kilometres';
-ENV_DATA.bm_size=size;
-ENV_DATA.food=floor(50*ones(size,size));        %distribute food in km x km squares 
-ENV_DATA.food(round(0.6*size):round(0.8*size),round(0.6*size):round(0.8*size))=0;   %generate patch where there is no food
+	ENV_DATA.pollen = zeros(size);
+	
+	% Create random locations in the data where flowers will be located
+	flower_positions = randperm(size^2, PARAM.NUM_FLOWERS);
+	[flower_pos_x, flower_pos_y] = ind2sub(size, flower_positions);
+	ENV_DATA.flower_positions = [flower_pos_x; flower_pos_y; sub2ind([size, size], flower_pos_x, flower_pos_y)]';
+	
+	ENV_DATA.pollen(flower_positions) = randi([PARAM.MIN_FLOWER_POLLEN, PARAM.MAX_FLOWER_POLLEN], 1, PARAM.NUM_FLOWERS);
+	ENV_DATA.total_pollen = sum(sum(ENV_DATA.pollen));
+
+	% Create random location for the hive
+	ENV_DATA.hive_location = [size/2, size/2];
+end

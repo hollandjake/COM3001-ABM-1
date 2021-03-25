@@ -1,73 +1,99 @@
-function ecolab(size,nr,nf,nsteps,fmode,outImages)
+function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 
-%ECO_LAB  agent-based predator-prey model, developed for
-%demonstration purposes only for University of Sheffield module
-%COM3001/6006/6009
-
-%AUTHOR Dawn Walker d.c.walker@sheffield.ac.uk
-%Created April 2008
-
-%ecolab(size,nr,nf,nsteps)
-%size = size of model environmnet in km (sugested value for plotting
-%purposes =50)
-%nr - initial number of rabbit agents
-%nf - initial number of fox agents
-%nsteps - number of iterations required
-
-%definition of global variables:
-%N_IT - current iteration number
-%IT_STATS  -  is data structure containing statistics on model at each
-%iteration (number of agents etc). iniitialised in initialise_results.m
-%ENV_DATA - data structure representing the environment (initialised in
-%create_environment.m)
-
-    %clear any global variables/ close figures from previous simulations
+	% ECOLAB runs a simulation of the bee foraging model
+	%
+	% ARGUMENTS
+	%	size				Size of the grid - it will be size x size
+	%
+	%	num_flowers			Number of flowers
+	%
+	%	number_of_agents	Number of bees
+	%
+	%	number_of_infected	Number of bees infected
+	%
+	%	number_of_steps		Number of iterations
+	%
+	% OPTIONAL ARGUMENTS
+	%	'seed'				Random number used for seeding the randomiser
+	%
+	%	'fastmode'			Skip some rendering to speed up processing (is disabled if savefile is enabled)
+	%
+	%	'savefile'			Save an mp4 of the figure
+	%
+	% e.g. ecolab(10, 25, 10, 2, 100, 'seed', 5, 'fastmode', true) will run
+	% a simulation on a 10x10 grid with 25 flowers, it will have 10 healthy
+	% agents and 2 infected agents, the simulation will run for 100
+	% iterations and will be initialised with the seed, '5', it will skip
+	% some rendering frames in order to speed up the simulation
+	% approximate runtime is 14 seconds
+	
+	
     clear global
     close all
 
     global N_IT IT_STATS ENV_DATA CONTROL_DATA
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%INPUT PARSING
+	
+	parser = inputParser;
+	addParameter(parser, 'seed', 0, @isnumeric);
+	addParameter(parser, 'fastmode', true, @islogical);
+	addParameter(parser, 'savefile', false, @islogical);
+	addParameter(parser, 'noshow', false, @islogical);
+	addParameter(parser, 'showlast', false, @islogical);
 
-    if nargin == 4
-        fmode=true;
-        outImages=false;
-    elseif nargin == 5
-        outImages=false;
-    end
+	parse(parser, varargin{:});
+	
+	fastmode = parser.Results.fastmode;
+	save_file = parser.Results.savefile;
+	noshow = parser.Results.noshow;
+	showlast = parser.Results.showlast;
+	
+	% Populate the random number generator with the seed
+	seed = parser.Results.seed;
+	if seed == 0
+		rng('shuffle');
+		r = rng;
+		seed = r.Seed;
+	else
+		rng(seed);
+	end
+	disp(['Using seed: "',num2str(seed), '"']);
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL INITIALISATION
     create_control;                     %sets up the parameters to control fmode (speed up the code during experimental testing
-    create_params;                      %sets the parameters for this simulation
+    create_params(num_flowers);                      %sets the parameters for this simulation
     create_environment(size);           %creates environment data structure, given an environment size
-    random_selection(1);                %randomises random number sequence (NOT agent order). If input=0, then simulation should be identical to previous for same initial values
-    [agent]=create_agents(nr,nf);       %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
-    create_messages(nr,nf,agent);       %sets up the initial message lists
-    initialise_results(nr,nf,nsteps);   %initilaises structure for storing results
+    agents=create_agents(na,ni);        %create nr rabbit and nf fox agents and places them in a cell array called 'agents'
+    create_messages(agents, nsteps);	%sets up the initial message lists
+    initialise_results(seed,na,ni,nsteps,size,save_file, noshow, showlast);   %initilaises structure for storing results
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %MODEL EXECUTION
-    for n_it=1:nsteps                   %the main execution loop
-        N_IT=n_it;
-        [agent,n]=agnt_solve(agent);     %the function which calls the rules
-        plot_results(agent,nsteps,fmode,outImages); %updates results figures and structures
-        %mov(n_it)=getframe(fig3);
-        if n<=0                          %if no more agents, then stop simulation
-            break
-            disp('General convergence criteria satisfied - no agents left alive! > ')
-        end
-        if fmode == true                                       % if fastmode is used ...
-           for test_l=1 : 5                                    % this checks the total number agents and adjusts the CONTROL_DATA.fmode_display_every variable accoringly to help prevent extreme slowdown
-               if n > CONTROL_DATA.fmode_control(1,test_l)     % CONTROL_DATA.fmode_control contains an array of thresholds for agent numbers and associated fmode_display_every values
-                   CONTROL_DATA.fmode_display_every = CONTROL_DATA.fmode_control(2,test_l);
-               end
-           end
-            if IT_STATS.tot_r(n_it) == 0             %fastmode convergence - all rabbits eaten - all foxes will now die
-                disp('Fast mode convergence criteria satisfied - no rabbits left alive! > ')
-                break
-            end  
-            if IT_STATS.tot_f(n_it) == 0             %fastmode convergence - all foxes starved - rabbits will now proliferate unchecked until all vegitation is eaten
-                disp('Fast mode convergence criteria satisfied - no foxes left alive ! > ')
-                break
-            end
-        end
-    end
-eval(['save results_nr_' num2str(nr) '_nf_' num2str(nf) '.mat IT_STATS ENV_DATA' ]);
-clear global
+	
+	for n_it=1:nsteps                   %the main execution loop
+		N_IT=n_it;
+		[agents, collected_pollen]=agnt_solve(agents);     %the function which calls the rules
+		remaining_pollen = sum(sum(ENV_DATA.pollen));
+		IT_STATS.pollen_remaining(N_IT+1) = remaining_pollen;
+		IT_STATS.pollen_transporting(N_IT+1) = collected_pollen;
+		IT_STATS.pollen_distribution(N_IT+1, :, :) = ENV_DATA.pollen;
+		plot_results(nsteps,fastmode, noshow,showlast); %updates results figures and structures
+		if remaining_pollen == 0 && collected_pollen == 0
+			disp('reached 0 remaining pollen');
+			break;
+		end
+	end
+	
+	if ~isempty(IT_STATS.VIDEO_CAPTURE)
+		VID = IT_STATS.VIDEO_CAPTURE;
+		close(VID);
+	end
+	
+	filename= sprintf("results/seed_%d_tot_%d_inf_%d.mat",seed,na,ni);
+	IT_STATS = rmfield(IT_STATS,'VIDEO_CAPTURE');
+	save(filename, 'IT_STATS', 'ENV_DATA');
+	
+	clear global
+end
