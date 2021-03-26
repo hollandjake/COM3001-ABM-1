@@ -18,7 +18,11 @@ function ecolab(size,num_flowers,na,ni,nsteps,varargin)
 	%
 	%	'fastmode'			Skip some rendering to speed up processing (is disabled if savefile is enabled)
 	%
-	%	'savefile'			Save an mp4 of the figure
+	%	'savefile'			Save an mp4 of the figure (will also render each frame)
+	%   
+	%   'noshow'            Don't render the figure
+	%
+	%   'showlast'          Render the first and last frame fo the figure
 	%
 	% e.g. ecolab(10, 25, 10, 2, 100, 'seed', 5, 'fastmode', true) will run
 	% a simulation on a 10x10 grid with 25 flowers, it will have 10 healthy
